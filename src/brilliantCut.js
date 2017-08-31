@@ -2,6 +2,10 @@
 
 const R = require('ramda');
 
+const maxBy = (xs, f) => xs.reduce((acc, x) => f(x) > f(acc) ? x : acc);
+
+const sum = xs => xs.reduce((a, b) => a + b);
+
 function* calculateCombinations(chunkSize, availableCuts, currentCuts) {
     currentCuts = currentCuts || [];
     for (let i = 0; i < availableCuts.length; i++) {
@@ -33,20 +37,43 @@ const calculateDetails = (chunkSize, cuts) => {
     };
 };
 
-const maxBy = (xs, f) => xs.reduce((acc, x) => f(x) > f(acc) ? x : acc);
-const sum = xs => xs.reduce((a, b) => a + b);
+// {
+//     "diamond": {
+//       "cuts": [
+//         {"size": 7, "value": 7},
+//         {"size": 11, "value": 14},
+//         {"size": 17, "value": 25}
+//       ],
+//       "rawChunks": [23, 23]
+//     },
+//     "sapphire": {
+//       "cuts": [
+//         {"size": 7, "value": 7},
+//         {"size": 11, "value": 14},
+//         {"size": 17, "value": 25}
+//       ],
+//       "rawChunks": [23, 23]
+//     }
+// }
 
-const process = input => {
-    const rawChunkSize = input.diamond.rawChunks[0];
-    const cuts = input.diamond.cuts;
-    return R.uniq(Array.from(calculateCombinations(rawChunkSize, cuts)))
-        .map(R.curry(calculateDetails)(rawChunkSize));
+const processGemType = (input, gemType) => {
+    const gem = input[gemType];
+    const cuts = gem.cuts;
+    return gem.rawChunks.map(rawChunk =>
+        R.uniq(Array.from(calculateCombinations(rawChunk, cuts)))
+            .map(R.curry(calculateDetails)(rawChunk))
+    );
 };
 
-const largestProfit = input =>
-    maxBy(process(input), details => details.profit).profit;
+const largestProfit = input => {
+    const xss1 = processGemType(input, 'diamond');
+    // const xss2 = processGemType(input, 'sapphire');
+    // const xss3 = processGemType(input, 'ruby');
+    const v1 = xss1.map(xs => maxBy(xs, x => x.profit)).map(x => x.profit);
+    const v2 = sum(v1);
+    return v2;
+};
 
 module.exports = {
-    process,
     largestProfit
 };

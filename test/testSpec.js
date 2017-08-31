@@ -1,39 +1,37 @@
 const expect = require('chai').expect;
-const input = require('./test.json');
 const brilliantCut = require('../src/brilliantCut');
+const input1 = require('./input1.json');
+const input2 = require('./input2.json');
+// const input3 = require('./input3.json');
+// const input4 = require('./input4.json');
 
 describe('BrilliantCut tests', () => {
 
     describe('given example', () => {
-
-        // For a raw chunk of size 23:
-        //
-        // Cuts         | Value     | Waste | Profit
-        // 17           | 25        | 6     | 19
-        // 11, 11       | 14+14=28  | 1     | 27
-        // 7, 7, 7      | 21        | 2     | 19
-        // 11, 7        | 21        | 5     | 16
-        // 11           | 14        | 12    | 2
-        // 7            | 7         | 16    | -9
-
-        it('combinations of cuts', () => {
-            const actual = brilliantCut.process(input);
-            const expectedElements = [
-                { cuts: [17], value: 25, waste: 6, profit: 19 },
-                { cuts: [11, 11], value: 28, waste: 1, profit: 27 },
-                { cuts: [7, 7, 7], value: 21, waste: 2, profit: 19 },
-                { cuts: [11, 7], value: 21, waste: 5, profit: 16 },
-                { cuts: [11], value: 14, waste: 12, profit: 2 },
-                { cuts: [7], value: 7, waste: 16, profit: -9 }
-            ];
-            expectedElements.forEach(expectedElement => {
-                expect(actual).to.deep.include(expectedElement);
-            });
-        });
-
         it('largest profit', () => {
-            const actual = brilliantCut.largestProfit(input);
+            const actual = brilliantCut.largestProfit(input1);
             expect(actual).to.equal(27);
         });
     });
+
+    describe('given example x 2 raw chunks', () => {
+        it('largest profit', () => {
+            const actual = brilliantCut.largestProfit(input2);
+            expect(actual).to.equal(27 * 2);
+        });
+    });
+
+    // describe('given example x 2 gem types', () => {
+    //     it('largest profit', () => {
+    //         const actual = brilliantCut.largestProfit(input3);
+    //         expect(actual).to.equal(27 * 2);
+    //     });
+    // });
+
+    // describe('given example x 2 gem types x 2 raw chunks', () => {
+    //     it('largest profit', () => {
+    //         const actual = brilliantCut.largestProfit(input4);
+    //         expect(actual).to.equal(27 * 4);
+    //     });
+    // });
 });
