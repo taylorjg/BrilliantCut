@@ -3,8 +3,7 @@
 const R = require('ramda');
 
 const max = xs => xs.reduce((acc, x) => Math.max(acc, x));
-// const maxBy = (xs, f) => xs.reduce((acc, x) => f(x) > f(acc) ? x : acc);
-const sum = xs => xs.reduce((a, b) => a + b, 0);
+const sum = xs => xs.reduce((acc, x) => acc + x, 0);
 
 function* calculateCombinations(chunkSize, availableCuts, currentCuts) {
     currentCuts = currentCuts || [];
@@ -40,9 +39,8 @@ const calculateDetails = (chunkSize, cuts) => {
 const processGemType = (input, gemType) => {
     const gem = input[gemType];
     if (!gem) return [];
-    const cuts = gem.cuts;
     return gem.rawChunks.map(rawChunk =>
-        R.uniq(Array.from(calculateCombinations(rawChunk, cuts)))
+        R.uniq(Array.from(calculateCombinations(rawChunk, gem.cuts)))
             .map(R.curry(calculateDetails)(rawChunk))
     );
 };
@@ -50,12 +48,13 @@ const processGemType = (input, gemType) => {
 const GEM_TYPES = ['diamond', 'sapphire', 'ruby'];
 
 const largestProfit = input => {
-    const v2 = GEM_TYPES
+    const bestProfitsPerGemType = GEM_TYPES
         .map(R.curry(processGemType)(input))
-        .map(allChunkCombinations =>
-            allChunkCombinations.map(chunkCombinations =>
-                max(chunkCombinations.map(combination => combination.profit))));
-    return sum(v2.map(xs => sum(xs)));
+        .map(perGemType =>
+            perGemType.map(perChunk =>
+                max(perChunk.map(combination => combination.profit))))
+        .map(sum);
+    return sum(bestProfitsPerGemType);
 };
 
 module.exports = {
