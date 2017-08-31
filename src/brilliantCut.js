@@ -1,16 +1,5 @@
 'use strict';
 
-// {
-//     "diamond": {
-//       "cuts": [
-//         {"size": 7, "value": 7},
-//         {"size": 11, "value": 14},
-//         {"size": 17, "value": 25}
-//       ],
-//       "rawChunks": [23]
-//     }
-// }
-
 function* calculateCombinations(chunkSize, cuts, currentCuts) {
     currentCuts = currentCuts || [];
     for (let i = 0; i < cuts.length; i++) {

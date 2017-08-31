@@ -1,6 +1,6 @@
 const expect = require('chai').expect;
 const input = require('./test.json');
-const brilliantCuts = require('../src/brilliantCuts');
+const brilliantCut = require('../src/brilliantCut');
 
 describe('BrilliantCut tests', () => {
 
@@ -17,7 +17,7 @@ describe('BrilliantCut tests', () => {
         // 7            | 7         | 16    | -9
 
         it('combinations of cuts', () => {
-            const actual = brilliantCuts.process(input);
+            const actual = brilliantCut.process(input);
             const expectedElements = [
                 { cuts: [17], value: 25, waste: 6, profit: 19 },
                 { cuts: [11, 11], value: 28, waste: 1, profit: 27 },
@@ -32,7 +32,7 @@ describe('BrilliantCut tests', () => {
         });
 
         it('largest profit', () => {
-            const actual = brilliantCuts.largestProfit(input);
+            const actual = brilliantCut.largestProfit(input);
             expect(actual).to.equal(27);
         });
     });
