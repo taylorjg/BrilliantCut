@@ -38,17 +38,15 @@ const calculateDetails = (chunkSize, cuts) => {
 
 const processGemType = (input, gemType) => {
     const gem = input[gemType];
-    if (!gem) return [];
     return gem.rawChunks.map(rawChunk =>
         R.uniq(Array.from(calculateCombinations(rawChunk, gem.cuts)))
             .map(R.curry(calculateDetails)(rawChunk))
     );
 };
 
-const GEM_TYPES = ['diamond', 'sapphire', 'ruby'];
-
 const largestProfit = input => {
-    const bestProfitsPerGemType = GEM_TYPES
+    const gemTypes = Object.keys(input);
+    const bestProfitsPerGemType = gemTypes
         .map(R.curry(processGemType)(input))
         .map(perGemType =>
             perGemType.map(perChunk =>
