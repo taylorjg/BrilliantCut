@@ -23,11 +23,11 @@ The following two lines look like they "morally" do the same thing but in the ca
 of the second one, memoization does not occur:
 
 ```js
-    return gemData.rawChunks.map(rawChunk => memoized(rawChunk));
+    return rawChunks.map(rawChunk => memoized(rawChunk));
 ```
 
 ```js
-    return gemData.rawChunks.map(memoized);
+    return rawChunks.map(memoized);
 ```
 
 I intend to follow this up separately and will update this readme if/when I figure it out.
