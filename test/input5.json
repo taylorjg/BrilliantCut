@@ -1,0 +1,11 @@
+{
+  "ruby": {
+    "cuts": [
+      {"size": 4, "value": 5},
+      {"size": 5, "value": 8},
+      {"size": 6, "value": 11},
+      {"size": 7, "value": 14}
+    ],
+    "rawChunks": [40]
+  }
+}
