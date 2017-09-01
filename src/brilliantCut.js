@@ -21,13 +21,13 @@ function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
     }
 }
 
-const calculateProfitForCombinationOfCuts = chunkSize => actualCuts => {
+const calculateProfitForCombinationOfCuts = rawChunk => actualCuts => {
     const cutValues = actualCuts.map(cut => cut.value);
     const cutSizes = actualCuts.map(cut => cut.size);
-    console.log(`  chunkSize: ${chunkSize}; cutSizes: ${JSON.stringify(cutSizes)}`);
+    console.log(`  rawChunk: ${rawChunk}; cuts: ${JSON.stringify(cutSizes)}`);
     const value = sum(cutValues);
     const sumOfCutSizes = sum(cutSizes);
-    const waste = chunkSize - sumOfCutSizes;
+    const waste = rawChunk - sumOfCutSizes;
     const profit = value - waste;
     return profit;
 };
