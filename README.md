@@ -1,3 +1,13 @@
+## Description
+
+Here is my attempt at a programming exercise regarding cutting diamonds.
+
+```sh
+$ npm install
+$ npm test
+$ npm start
+```
+
 ## Links
 
 * [Brilliant cut — Wunderdog](http://wunder.dog/brilliant-cut)
