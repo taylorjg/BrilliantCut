@@ -39,7 +39,7 @@ const calculateAllProfitsForRawChunk = (rawChunk, cuts) =>
 const memoizedCalculateAllProfitsForRawChunk =
     R.memoize(calculateAllProfitsForRawChunk);
 
-const calculateAllProfitsPerGemType = ([gemType, gemValue]) => {
+const calculateAllProfitsForGemType = ([gemType, gemValue]) => {
     console.log(`processing ${gemType}...`);
     return gemValue.rawChunks.map(rawChunk =>
         memoizedCalculateAllProfitsForRawChunk(rawChunk, gemValue.cuts));
@@ -47,11 +47,11 @@ const calculateAllProfitsPerGemType = ([gemType, gemValue]) => {
 
 const largestProfit = input => {
     const gemTypes = Object.entries(input);
-    const sumsOfLargestProfitsPerGemType = gemTypes
-        .map(calculateAllProfitsPerGemType)
+    const sumPerGemType = gemTypes
+        .map(calculateAllProfitsForGemType)
         .map(allProfitsPerGemType => allProfitsPerGemType.map(max))
         .map(sum);
-    return sum(sumsOfLargestProfitsPerGemType);
+    return sum(sumPerGemType);
 };
 
 module.exports = {
