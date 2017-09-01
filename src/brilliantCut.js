@@ -21,6 +21,8 @@ function* calculateCombinations(chunkSize, availableCuts, currentCuts) {
 
 const calculateDetails = (chunkSize, cuts) => {
 
+    console.log(`chunkSize: ${chunkSize}`);
+
     const cutValues = cuts.map(cut => cut.value);
     const cutSizes = cuts.map(cut => cut.size);
     const value = sum(cutValues);
@@ -37,6 +39,7 @@ const calculateDetails = (chunkSize, cuts) => {
 };
 
 const processGemType = (input, gemType) => {
+    console.log(`processing ${gemType}...`);
     const gem = input[gemType];
     return gem.rawChunks.map(rawChunk =>
         R.uniq(Array.from(calculateCombinations(rawChunk, gem.cuts)))
@@ -46,13 +49,13 @@ const processGemType = (input, gemType) => {
 
 const largestProfit = input => {
     const gemTypes = Object.keys(input);
-    const bestProfitsPerGemType = gemTypes
+    const largestProfitsPerGemType = gemTypes
         .map(R.curry(processGemType)(input))
         .map(perGemType =>
             perGemType.map(perChunk =>
                 max(perChunk.map(combination => combination.profit))))
         .map(sum);
-    return sum(bestProfitsPerGemType);
+    return sum(largestProfitsPerGemType);
 };
 
 module.exports = {
