@@ -26,7 +26,7 @@ function* generateCombinationsOfCuts(chunkSize, availableCuts, currentCuts) {
 const calculateProfitForCombinationOfCuts = chunkSize => cuts => {
     const cutValues = cuts.map(cut => cut.value);
     const cutSizes = cuts.map(cut => cut.size);
-    console.log(`chunkSize: ${chunkSize}; cutSizes: ${JSON.stringify(cutSizes)}`);
+    console.log(`  chunkSize: ${chunkSize}; cutSizes: ${JSON.stringify(cutSizes)}`);
     const value = sum(cutValues);
     const sumOfCutSizes = sum(cutSizes);
     const waste = chunkSize - sumOfCutSizes;
@@ -41,17 +41,16 @@ const calculateAllProfitsForRawChunk = (rawChunk, cuts) =>
 const memoizedCalculateAllProfitsForRawChunk =
     R.memoize(calculateAllProfitsForRawChunk);
 
-const calculateAllProfitsPerGemType = input => gemType => {
+const calculateAllProfitsPerGemType = ([gemType, gemValue]) => {
     console.log(`processing ${gemType}...`);
-    const gem = input[gemType];
-    return gem.rawChunks.map(rawChunk =>
-        memoizedCalculateAllProfitsForRawChunk(rawChunk, gem.cuts));
+    return gemValue.rawChunks.map(rawChunk =>
+        memoizedCalculateAllProfitsForRawChunk(rawChunk, gemValue.cuts));
 };
 
 const largestProfit = input => {
-    const gemTypes = Object.keys(input);
+    const gemTypes = Object.entries(input);
     const sumsOfLargestProfitsPerGemType = gemTypes
-        .map(calculateAllProfitsPerGemType(input))
+        .map(calculateAllProfitsPerGemType)
         .map(allProfitsPerGemType => allProfitsPerGemType.map(max))
         .map(sum);
     return sum(sumsOfLargestProfitsPerGemType);
