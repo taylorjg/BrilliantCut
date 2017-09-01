@@ -36,15 +36,15 @@ const calculateAllProfitsForRawChunk = availableCuts => rawChunk =>
     R.uniq(Array.from(generateCombinationsOfCuts(rawChunk, availableCuts)))
         .map(calculateProfitForCombinationOfCuts(rawChunk));
 
-const calculateAllProfitsForAllRawChunks = ([gemType, gemData]) => {
+const calculateAllProfitsForAllRawChunks = ([gemType, { cuts, rawChunks }]) => {
     console.log(`processing ${gemType}...`);
-    const memoized = R.memoize(calculateAllProfitsForRawChunk(gemData.cuts));
+    const memoized = R.memoize(calculateAllProfitsForRawChunk(cuts));
     /*
      * Strangely, if I do the following, it works but the memoization
      * seems to be bypassed so it takes longer to run:
      * return gemData.rawChunks.map(memoized);
      */
-    return gemData.rawChunks.map(rawChunk => memoized(rawChunk));
+    return rawChunks.map(rawChunk => memoized(rawChunk));
 };
 
 const largestProfit = input => {
