@@ -32,26 +32,23 @@ const calculateProfitForCombinationOfCuts = chunkSize => cuts => {
     return profit;
 };
 
-const calculateAllProfitsForRawChunk = (rawChunk, cuts) =>
+const calculateAllProfitsForRawChunk = cuts => rawChunk =>
     R.uniq(Array.from(generateCombinationsOfCuts(rawChunk, cuts)))
         .map(calculateProfitForCombinationOfCuts(rawChunk));
 
-const memoizedCalculateAllProfitsForRawChunk =
-    R.memoize(calculateAllProfitsForRawChunk);
-
-const calculateAllProfitsForGemType = ([gemType, gemValue]) => {
+const calculateAllProfitsForAllRawChunks = ([gemType, gemData]) => {
     console.log(`processing ${gemType}...`);
-    return gemValue.rawChunks.map(rawChunk =>
-        memoizedCalculateAllProfitsForRawChunk(rawChunk, gemValue.cuts));
+    const memoized = R.memoize(calculateAllProfitsForRawChunk(gemData.cuts));
+    return gemData.rawChunks.map(rawChunk => memoized(rawChunk));
 };
 
 const largestProfit = input => {
     const gemTypes = Object.entries(input);
-    const sumPerGemType = gemTypes
-        .map(calculateAllProfitsForGemType)
-        .map(allProfitsPerGemType => allProfitsPerGemType.map(max))
+    const largestProfitPerGemType = gemTypes
+        .map(calculateAllProfitsForAllRawChunks)
+        .map(allProfitsGroupedByRawChunk => allProfitsGroupedByRawChunk.map(max))
         .map(sum);
-    return sum(sumPerGemType);
+    return sum(largestProfitPerGemType);
 };
 
 module.exports = {

@@ -4,7 +4,6 @@ const input1 = require('./input1.json');
 const input2 = require('./input2.json');
 const input3 = require('./input3.json');
 const input4 = require('./input4.json');
-const input5 = require('./input5.json');
 
 describe('BrilliantCut tests', () => {
 
@@ -34,12 +33,5 @@ describe('BrilliantCut tests', () => {
             const actual = brilliantCut.largestProfit(input4);
             expect(actual).to.equal(27 * 4);
         });
-    });
-
-    describe('ruby 40', () => {
-        it('largest profit', () => {
-            const actual = brilliantCut.largestProfit(input5);
-            expect(actual).to.equal(74);
-        }).timeout(20 * 1000);
     });
 });

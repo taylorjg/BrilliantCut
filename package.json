@@ -4,6 +4,7 @@
   "description": "http://wunder.dog/brilliant-cut",
   "main": "index.js",
   "scripts": {
+    "start": "node src/main",
     "test": "mocha"
   },
   "author": "Jonathan Taylor",
