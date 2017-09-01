@@ -1,5 +1,3 @@
-'use strict';
-
 const R = require('ramda');
 
 const max = xs => xs.reduce((acc, x) => Math.max(acc, x));
