@@ -38,13 +38,10 @@ const calculateAllProfitsForRawChunk = availableCuts => rawChunk =>
 
 const calculateAllProfitsForAllRawChunks = ([gemType, { cuts, rawChunks }]) => {
     console.log(`processing ${gemType}...`);
-    const memoized = R.memoize(calculateAllProfitsForRawChunk(cuts));
-    /*
-     * Strangely, if I do the following, it works but the memoization
-     * seems to be bypassed so it takes longer to run:
-     * return gemData.rawChunks.map(memoized);
-     */
-    return rawChunks.map(rawChunk => memoized(rawChunk));
+    const memoized = R.memoizeWith(
+        rawChunk => rawChunk.toString(),
+        calculateAllProfitsForRawChunk(cuts));
+    return rawChunks.map(memoized);
 };
 
 const largestProfit = input => {
