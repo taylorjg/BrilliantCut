@@ -11,7 +11,7 @@ function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
         if (remainingChunkSize > 0) {
             const clonedActualCuts = actualCuts.slice();
             clonedActualCuts.push(cut);
-            clonedActualCuts.sort((a, b) => b.size - a.size);
+            clonedActualCuts.sort((a, b) => a.size - b.size);
             yield clonedActualCuts;
             yield* generateCombinationsOfCuts(
                 remainingChunkSize,
@@ -32,21 +32,25 @@ const calculateProfitForCombinationOfCuts = rawChunk => actualCuts => {
     return profit;
 };
 
-const calculateAllProfitsForRawChunk = availableCuts => rawChunk =>
-    R.uniq(Array.from(generateCombinationsOfCuts(rawChunk, availableCuts)))
-        .map(calculateProfitForCombinationOfCuts(rawChunk));
+const calculateMaxProfitForRawChunk = (availableCuts, rawChunk) =>
+    // Do some R.compose here ?
+    max(
+        R.uniq(Array.from(generateCombinationsOfCuts(rawChunk, availableCuts)))
+            .map(calculateProfitForCombinationOfCuts(rawChunk)));
 
-const calculateAllProfitsForAllRawChunks = ([gemType, { cuts, rawChunks }]) => {
+const calculateMaxProfitForEachRawChunk = ([gemType, { cuts, rawChunks }]) => {
     console.log(`processing ${gemType}...`);
-    const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
-    return rawChunks.map(memoized);
+    const groups = R.groupBy(R.identity, rawChunks);
+    return Object.entries(groups).map(([, group]) => {
+        const rawChunk = R.head(group);
+        return calculateMaxProfitForRawChunk(cuts, rawChunk) * group.length;
+    });
 };
 
 const largestProfit = input => {
     const gemTypes = Object.entries(input);
     const largestTotalProfitPerGemType = gemTypes
-        .map(calculateAllProfitsForAllRawChunks)
-        .map(allProfitsForRawChunk => allProfitsForRawChunk.map(max))
+        .map(calculateMaxProfitForEachRawChunk)
         .map(sum);
     return sum(largestTotalProfitPerGemType);
 };
