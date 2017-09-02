@@ -4,7 +4,7 @@ Here is my attempt at a [programming exercise](http://wunder.dog/brilliant-cut) 
 It is written in Node.js and uses a bit of [Ramda](http://ramdajs.com/):
 
 * [R.uniq](http://ramdajs.com/docs/#uniq)
-* [R.memoize](http://ramdajs.com/docs/#memoize)
+* [R.memoizeWith](http://ramdajs.com/docs/#memoizeWith)
 
 ```sh
 $ npm install
@@ -14,7 +14,7 @@ $ npm start
 
 ## Running time
 
-This code gives an answer in about 55 seconds on my machine (MacBook Pro 2.2 GHz Intel Core i7) using Node.js v8.4.0.
+This code gives an answer in just over 51 seconds on my machine (MacBook Pro 2.2 GHz Intel Core i7) using Node.js v8.4.0.
 
 ## Notes
 
@@ -23,17 +23,47 @@ The following two lines look like they "morally" do the same thing but in the ca
 of the second one, memoization does not occur:
 
 ```js
-    return rawChunks.map(rawChunk => memoized(rawChunk));
+    return rawChunks.map(rawChunk => memoized(rawChunk));   // (A)
 ```
 
 ```js
-    return rawChunks.map(memoized);
+    return rawChunks.map(memoized);                         // (B)
 ```
 
 I intend to follow this up separately and will update this readme if/when I figure it out.
 
 The only thing worth mentioning now is that I am memoizing a partially applied curried lambda
 (not to be confused with [lamb curry](https://www.bbcgoodfood.com/recipes/home-style-lamb-curry)).
+
+#### *UPDATE*
+
+I figured it out. `R.memoize` is just a simple wrapper around `R.memoizeWith` which takes an additional function parameter to build the cache key strings. `R.memoize` uses an internal function to convert `arguments` to a cache key string.
+
+`Array.prototype.map` invokes its callback with three parameters - `currentValue`, `index` and `array`. Therefore, all three of these parameters contribute to the cache key string. The `index` will be different on each invokation so the cache keys will all be different e.g. `1-0-<array>`, `1-1-<array>` and `1-2-<array>`. This is why no memoization occurs.
+
+To correct this, I changed how I create the memoized function from this:
+
+```js
+    const memoized = R.memoize(calculateAllProfitsForRawChunk(cuts));
+```
+
+to this:
+
+```js
+    const memoized = R.memoizeWith(
+        rawChunk => rawChunk.toString(),
+        calculateAllProfitsForRawChunk(cuts));
+```
+
+You could argue that this means I should have just stuck with (A) above. In general though,
+someone may look at (A) and change it to (B) because they look like they should do the same
+thing. However, they would be unwittingly disabling memoization.
+
+On a final note, I further simplified the creation of the memoized function to this:
+
+```js
+    const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
+```
 
 ## Links
 
