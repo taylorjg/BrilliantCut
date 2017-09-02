@@ -38,9 +38,7 @@ const calculateAllProfitsForRawChunk = availableCuts => rawChunk =>
 
 const calculateAllProfitsForAllRawChunks = ([gemType, { cuts, rawChunks }]) => {
     console.log(`processing ${gemType}...`);
-    const memoized = R.memoizeWith(
-        rawChunk => rawChunk.toString(),
-        calculateAllProfitsForRawChunk(cuts));
+    const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
     return rawChunks.map(memoized);
 };
 
