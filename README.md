@@ -1,10 +1,7 @@
 ## Description
 
 Here is my attempt at a [programming exercise](http://wunder.dog/brilliant-cut) regarding cutting diamonds.
-It is written in Node.js and uses a bit of [Ramda](http://ramdajs.com/):
-
-* [R.uniq](http://ramdajs.com/docs/#uniq)
-* [R.memoizeWith](http://ramdajs.com/docs/#memoizeWith)
+It is written in Node.js and uses a bit of [Ramda](http://ramdajs.com/).
 
 ```sh
 $ npm install

@@ -1,7 +1,6 @@
 const R = require('ramda');
 
 const max = xs => xs.reduce((acc, x) => Math.max(acc, x));
-const sum = xs => xs.reduce((acc, x) => acc + x, 0);
 
 function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
     actualCuts = actualCuts || [];
@@ -24,31 +23,34 @@ function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
 const calculateProfitForCombinationOfCuts = rawChunk => actualCuts => {
     const cutValues = actualCuts.map(cut => cut.value);
     const cutSizes = actualCuts.map(cut => cut.size);
-    console.log(`  rawChunk: ${rawChunk}; cuts: ${JSON.stringify(cutSizes)}`);
-    const value = sum(cutValues);
-    const sumOfCutSizes = sum(cutSizes);
+    const value = R.sum(cutValues);
+    const sumOfCutSizes = R.sum(cutSizes);
     const waste = rawChunk - sumOfCutSizes;
     const profit = value - waste;
     return profit;
 };
 
-const calculateAllProfitsForRawChunk = availableCuts => rawChunk =>
-    R.uniq(Array.from(generateCombinationsOfCuts(rawChunk, availableCuts)))
-        .map(calculateProfitForCombinationOfCuts(rawChunk));
+const calculateMaxProfitForRawChunk = availableCuts => rawChunk =>
+    R.compose(
+        max,
+        R.map(calculateProfitForCombinationOfCuts(rawChunk)),
+        R.uniq,
+        Array.from,
+        generateCombinationsOfCuts
+    )(rawChunk, availableCuts);
 
-const calculateAllProfitsForAllRawChunks = ([gemType, { cuts, rawChunks }]) => {
-    console.log(`processing ${gemType}...`);
-    const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
+const calculateMaxProfitForEachRawChunk = ([, { cuts, rawChunks }]) => {
+    const memoized = R.memoizeWith(String, calculateMaxProfitForRawChunk(cuts));
     return rawChunks.map(memoized);
 };
 
 const largestProfit = input => {
     const gemTypes = Object.entries(input);
-    const largestTotalProfitPerGemType = gemTypes
-        .map(calculateAllProfitsForAllRawChunks)
-        .map(allProfitsForRawChunk => allProfitsForRawChunk.map(max))
-        .map(sum);
-    return sum(largestTotalProfitPerGemType);
+    return R.compose(
+        R.sum,
+        R.map(R.sum),
+        R.map(calculateMaxProfitForEachRawChunk)
+    )(gemTypes);
 };
 
 module.exports = {
