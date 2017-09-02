@@ -35,35 +35,38 @@ I intend to follow this up separately and will update this readme if/when I figu
 The only thing worth mentioning now is that I am memoizing a partially applied curried lambda
 (not to be confused with [lamb curry](https://www.bbcgoodfood.com/recipes/home-style-lamb-curry)).
 
-#### *UPDATE*
-
-I figured it out. `R.memoize` is just a simple wrapper around `R.memoizeWith` which takes an additional function parameter to build the cache key strings. `R.memoize` uses an internal function to convert `arguments` to a cache key string.
-
-`Array.prototype.map` invokes its callback with three parameters - `currentValue`, `index` and `array`. Therefore, all three of these parameters contribute to the cache key string. The `index` will be different on each invokation so the cache keys will all be different e.g. `1-0-<array>`, `1-1-<array>` and `1-2-<array>`. This is why no memoization occurs.
-
-To correct this, I changed how I create the memoized function from this:
-
-```js
-    const memoized = R.memoize(calculateAllProfitsForRawChunk(cuts));
-```
-
-to this:
-
-```js
-    const memoized = R.memoizeWith(
-        rawChunk => rawChunk.toString(),
-        calculateAllProfitsForRawChunk(cuts));
-```
-
-You could argue that this means I should have just stuck with (A) above. In general though,
+> *UPDATE*
+> 
+> I figured it out. `R.memoize` is just a simple wrapper around `R.memoizeWith` which has an additional function parameter to build the cache key strings. `R.memoize` uses an internal function to convert `arguments` to a cache key string.
+> 
+> `Array.prototype.map` invokes its callback with three arguments - `currentValue`, `index` and `array`. Therefore, all three of these arguments contribute to the cache key string. The `index` will be different on each invokation so the cache keys will all be different e.g. `1-0-<array>`, `1-1-<array>` and `1-2-<array>`. So memoization is taking place but it never finds any cache hits!
+> 
+> To correct this, I changed how I create the memoized function from this:
+> 
+> ```js
+>     const memoized = R.memoize(calculateAllProfitsForRawChunk(cuts));
+> ```
+> 
+> to this:
+> 
+> ```js
+>     const memoized = R.memoizeWith(
+>         rawChunk => rawChunk.toString(),
+>         calculateAllProfitsForRawChunk(cuts));
+> ```
+> 
+> This explicitly controls how cache key strings are created. It only uses the `rawChunk` argument
+to create the cache key string.
+> 
+> You could argue that this means I should have just stuck with (A) above. In general though,
 someone may look at (A) and change it to (B) because they look like they should do the same
 thing. However, they would be unwittingly disabling memoization.
-
-On a final note, I further simplified the creation of the memoized function to this:
-
-```js
-    const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
-```
+> 
+> On a final note, I further simplified the creation of the memoized function to this:
+> 
+> ```js
+>     const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
+> ```
 
 ## Links
 
