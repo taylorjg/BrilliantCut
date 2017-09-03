@@ -39,13 +39,13 @@ const calculateMaxProfitForRawChunk = availableCuts => rawChunk =>
         generateCombinationsOfCuts
     )(rawChunk, availableCuts);
 
-const calculateMaxProfitForEachRawChunk = ([, { cuts, rawChunks }]) => {
+const calculateMaxProfitForEachRawChunk = ({ cuts, rawChunks }) => {
     const memoized = R.memoizeWith(String, calculateMaxProfitForRawChunk(cuts));
     return rawChunks.map(memoized);
 };
 
 const largestProfit = input => {
-    const gemTypes = Object.entries(input);
+    const gemTypes = Object.values(input);
     return R.compose(
         R.sum,
         R.map(R.sum),
