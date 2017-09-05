@@ -36,14 +36,14 @@ The only thing worth mentioning now is that I am memoizing a partially applied c
 
 > *UPDATE*
 > 
-> I figured it out. `R.memoize` is just a simple wrapper around `R.memoizeWith` which has an additional function parameter to build the cache key strings. `R.memoize` uses an internal function to convert `arguments` to a cache key string.
+> I figured it out. `R.memoize` is just a simple wrapper around `R.memoizeWith` which has an additional parameter to build the cache key strings. `R.memoize` uses an internal function to convert `arguments` to a cache key string.
 > 
-> `Array.prototype.map` invokes its callback with three arguments - `currentValue`, `index` and `array`. Therefore, all three of these arguments contribute to the cache key string. The `index` will be different on each invokation so the cache keys will all be different e.g. `1-0-<array>`, `1-1-<array>` and `1-2-<array>`. So memoization is taking place but it never finds any cache hits!
+> `Array.prototype.map` invokes its callback with three arguments: `currentValue`, `index` and `array`. Therefore, all three of these arguments contribute to the cache key string. The `index` will be different on each invocation so the cache keys will all be different e.g. `1-0-<array>`, `1-1-<array>` and `1-2-<array>`. So memoization is taking place but it never finds any cache hits!
 > 
 > To correct this, I changed how I create the memoized function from this:
 > 
 > ```js
->     const memoized = R.memoize(calculateAllProfitsForRawChunk(cuts));
+>     const memoized = R.memoize(calculateMaxProfitForRawChunk(cuts));
 > ```
 > 
 > to this:
@@ -51,7 +51,7 @@ The only thing worth mentioning now is that I am memoizing a partially applied c
 > ```js
 >     const memoized = R.memoizeWith(
 >         rawChunk => rawChunk.toString(),
->         calculateAllProfitsForRawChunk(cuts));
+>         calculateMaxProfitForRawChunk(cuts));
 > ```
 > 
 > This explicitly controls how cache key strings are created. It only uses the `rawChunk` argument
@@ -64,7 +64,7 @@ thing. However, they would be unwittingly disabling memoization.
 > On a final note, I further simplified the creation of the memoized function to this:
 > 
 > ```js
->     const memoized = R.memoizeWith(String, calculateAllProfitsForRawChunk(cuts));
+>     const memoized = R.memoizeWith(String, calculateMaxProfitForRawChunk(cuts));
 > ```
 
 ## Links
