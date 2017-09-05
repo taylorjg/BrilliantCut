@@ -3,7 +3,6 @@
 Here is my attempt at a [programming exercise](http://wunder.dog/brilliant-cut) regarding cutting diamonds.
 It is written in Node.js and uses a bit of [Ramda](http://ramdajs.com/):
 
-* [R.sum](http://ramdajs.com/docs/#sum)
 * [R.memoizeWith](http://ramdajs.com/docs/#memoizeWith)
 
 ```sh
@@ -14,7 +13,7 @@ $ npm start
 
 ## Running time
 
-This code gives an answer in just over 600ms on my machine (MacBook Pro 2.2 GHz Intel Core i7) using Node.js v8.4.0.
+This code gives an answer in under 400ms on my machine (MacBook Pro 2.2 GHz Intel Core i7) using Node.js v8.4.0.
 
 ## Notes
 

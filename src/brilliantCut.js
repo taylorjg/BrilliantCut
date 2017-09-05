@@ -2,6 +2,9 @@ const R = require('ramda');
 
 const max = xs => xs.reduce((acc, x) => Math.max(acc, x), 0);
 
+// This seems to be quicker than R.sum
+const sum = xs => xs.reduce((acc, x) => acc + x, 0);
+
 function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
     for (let i = 0; i < availableCuts.length; i++) {
         const cut = availableCuts[i];
@@ -19,8 +22,8 @@ function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
 }
 
 const calculateProfitForCombinationOfCuts = rawChunk => actualCuts => {
-    const value = R.sum(actualCuts.map(cut => cut.value));
-    const sumOfCutSizes = R.sum(actualCuts.map(cut => cut.size));
+    const value = sum(actualCuts.map(cut => cut.value));
+    const sumOfCutSizes = sum(actualCuts.map(cut => cut.size));
     const waste = rawChunk - sumOfCutSizes;
     const profit = value - waste;
     return profit;
@@ -39,8 +42,8 @@ const largestProfit = input => {
     const gemTypes = Object.values(input);
     const largestTotalProfitPerGemType = gemTypes
         .map(calculateMaxProfitsForRawChunks)
-        .map(R.sum);
-    return R.sum(largestTotalProfitPerGemType);
+        .map(sum);
+    return sum(largestTotalProfitPerGemType);
 };
 
 module.exports = {
