@@ -9,7 +9,7 @@ function* generateCombinationsOfCuts(chunkSize, availableCuts, actualCuts) {
     for (let i = 0; i < availableCuts.length; i++) {
         const cut = availableCuts[i];
         const remainingChunkSize = chunkSize - cut.size;
-        if (remainingChunkSize > 0) {
+        if (remainingChunkSize >= 0) {
             const clonedActualCuts = actualCuts.slice();
             clonedActualCuts.push(cut);
             yield clonedActualCuts;
